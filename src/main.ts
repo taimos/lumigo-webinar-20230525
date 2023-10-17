@@ -1,23 +1,16 @@
-import { App, Stack, StackProps } from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-
-export class MyStack extends Stack {
-  constructor(scope: Construct, id: string, props: StackProps = {}) {
-    super(scope, id, props);
-
-    // define resources here...
-  }
-}
-
-// for development, use account/region from cdk cli
-const devEnv = {
-  account: process.env.CDK_DEFAULT_ACCOUNT,
-  region: process.env.CDK_DEFAULT_REGION,
-};
+import { Lumigo } from '@lumigo/cdk-constructs-v2';
+import { App, SecretValue } from 'aws-cdk-lib';
+import { AppStack } from './stack';
 
 const app = new App();
 
-new MyStack(app, 'demo-20230525-dev', { env: devEnv });
-// new MyStack(app, 'demo-20230525-prod', { env: prodEnv });
+new Lumigo({ lumigoToken: SecretValue.secretsManager('LumigoToken') }).traceEverything(app);
+
+new AppStack(app, 'demo-20230525-dev', {
+  env: {
+    account: '538118019757',
+    region: 'eu-central-1',
+  },
+});
 
 app.synth();
